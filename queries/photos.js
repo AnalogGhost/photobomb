@@ -1,7 +1,7 @@
 const knex = require('../knex');
 
 function getPhotos() {
-  return knex()
+  return knex.queryBuilder()
     .select(
       'P.photo_id AS id',
       'P.photo_url AS url',
@@ -9,12 +9,12 @@ function getPhotos() {
       'PU.name AS photographer_name'
     )
     .from('photo as P')
-    .innerJoin('photobomb_user as PU', 'P.photobomb_user_id', 'PU.photobomb_user_id')
+    .innerJoin('photobomb_user as PU', 'P.photobomb_user_id', 'PU.photobomb_user_id');
 }
 
 function getPhotoLikes(id) {
 
-  return knex()
+  return knex.queryBuilder()
     .select(
       'PL.photobomb_user_id AS id',
       'PU.name AS name'
@@ -27,7 +27,7 @@ function getPhotoLikes(id) {
 }
 
 function getPhotoComments(id) {
-  return knex()
+  return knex.queryBuilder()
     .select(
       'PC.comment_id as id',
       'PC.comment_text as text',
@@ -40,15 +40,17 @@ function getPhotoComments(id) {
 }
 
 function list() {
-  return getPhotos().then(photos => {
-    return getPhotoLikes(photos[0].id).then(likes => {
-      photos[0].photo_likes = likes;
-      return getPhotoComments(photos[0].id).then(comments => {
-        photos[0].comments = comments;
-        return Promise.resolve(photos);
-      });
-    })
-  });
+  return getPhotos()
+  .then(photos =>
+    Promise.all(photos.map(photo =>
+      Promise.all([getPhotoComments(photo.id),getPhotoLikes(photo.id)])
+      .then(social_data => {
+        photo.comment = social_data[0];
+        photo.likes = social_data[1];
+        return photo;
+      })
+    ))
+  )
 }
 
 module.exports = {

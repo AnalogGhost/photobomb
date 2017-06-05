@@ -7,9 +7,6 @@ router.get('/', (req,res,next) => {
   queries.list()
   .then(result => {
     res.send(result);
-  })
-  .catch( err => {
-    next(err);
   });
 });
 
