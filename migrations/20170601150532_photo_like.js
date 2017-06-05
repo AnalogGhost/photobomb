@@ -5,6 +5,7 @@ exports.up = function(knex, Promise) {
     table.integer('photobomb_user_id').notNullable().references('photobomb_user.photobomb_user_id');
     table.integer('photo_id').notNullable().references('photo.photo_id');
     table.primary(['photobomb_user_id','photo_id']);
+    table.timestamps(true,true);
   });
 };
 

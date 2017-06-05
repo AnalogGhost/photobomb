@@ -5,6 +5,7 @@ exports.up = function(knex, Promise) {
     table.increments('photo_id');
     table.string("photo_url").notNullable();
     table.integer('photobomb_user_id').notNullable().index().references('photobomb_user.photobomb_user_id');
+    table.timestamps(true,true);
   });
 };
 
