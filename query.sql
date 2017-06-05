@@ -13,4 +13,4 @@ JOIN photobomb_user plu ON pl.photobomb_user_id = plu.photobomb_user_id
 JOIN comment c ON p.photo_id = c.photo_id
 JOIN photobomb_user cu ON c.photobomb_user_id = cu.photobomb_user_id
 JOIN comment_like cl ON c.comment_id = cl.comment_id
-JOIN photobomb_user clu ON cl.photobomb_user_id = clu.photobomb_user_id
+JOIN photobomb_user clu ON cl.photobomb_user_id = clu.photobomb_user_id;

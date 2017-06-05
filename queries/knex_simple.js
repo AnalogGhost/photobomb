@@ -20,4 +20,4 @@ function list() {
 }
 
 
-module.exports = list;
+module.exports = {list};
