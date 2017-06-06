@@ -1,7 +1,7 @@
 const knex = require('../knex');
 
-function getAllPhotos() {
-  return knex('photo')
+function getAllPhotos(id) {
+  let query = knex('photo')
     .select(
       'photo.photo_id AS id',
       'photo.photo_url AS url',
@@ -9,6 +9,12 @@ function getAllPhotos() {
       'photobomb_user.name AS photographer_name'
     )
     .innerJoin('photobomb_user', 'photo.photobomb_user_id', 'photobomb_user.photobomb_user_id');
+
+    if (id) {
+      query.where({photo_id:id});
+    }
+
+    return query;
 }
 
 function getPhotoLikes(id) {
@@ -51,8 +57,8 @@ function getPhotoCommentLikes(comments) {
   ));
 }
 
-function list() {
-  return getAllPhotos()
+function get(id) {
+  return getAllPhotos(id)
   .then(photos =>
     Promise.all(photos.map(photo =>
       Promise.all([getPhotoComments(photo.id),getPhotoLikes(photo.id)])
@@ -62,14 +68,10 @@ function list() {
         return photo;
       })
     ))
+    .then(complete => id ? complete[0] : complete)
   );
 }
 
-function get(id) {
-  return Promise.resolve();
-}
-
 module.exports = {
-  get,
-  list
+  get
 };
